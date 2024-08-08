@@ -1,0 +1,7 @@
+@import '11-photos';
+
+@each $photo-class-name in $list-names {
+    .photo-#{$photo-class-name} {
+        background: image-url('photos/#{$photo-class-name}.jpg') no-repeat;
+    }
+}
