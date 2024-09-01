@@ -1,0 +1,48 @@
+.btn-primary {
+    color: #FFFFFF;
+    background-color: #E0003C;
+    border-color: #E0003C;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    color: #FFFFFF !important;
+    background-color: #BC1340 !important;
+    border-color: #BC1340 !important;
+}
+
+.btn-outline-primary {
+    color: #E0003C;
+    border-color: #E0003C;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+    color: #FFFFFF !important;
+    background-color: #E0003C !important;
+    border-color: #E0003C !important;
+}
+
+a:hover, a:focus,
+a.text-dark:hover, a.text-dark:focus {
+    color: #E0003C !important;
+    text-decoration: none;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #E0003C!important;
+}
+
+.card {
+    border: 1px solid #E0003C;
+    border-radius: 1rem;
+}
+.card-header {
+    color: #FFFFFF;
+    background-color: #E0003C;
+}
+.card-header:first-child {
+    border-radius: calc(1rem - 1px) calc(1rem - 1px) 0 0;
+}
+
+.text-muted {
+    color: #8C8C8C !important;
+}
