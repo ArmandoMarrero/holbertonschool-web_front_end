@@ -1,0 +1,72 @@
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Task 7</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script type="application/javascript">
+
+            function createSearchForm() {
+                const textQueryElement = $('<input type="text">');
+                const submitButton = $('<input type="submit">');
+                submitButton.click(
+                    function () {
+                        queryWikipedia(textQueryElement.val());
+                    }
+                );
+                $('body').append(
+                    textQueryElement,
+                    submitButton,
+                    $('<ul></ul>')
+                );
+            }
+            function addNewArticle(id, title, snippet) {
+                $('ul').append(
+                    $('<li></li>').append(
+                        $('<p></p>').append(
+                            $('<span>' + id + ' - </span>').append(
+                                '<b>' + title + '</b>'
+                            )
+                        ),
+                        $('<p></p>').text(snippet)
+                    )
+                );
+            }
+            function queryWikipedia (search) {
+                const data = {
+                    action: 'query',
+                    list: 'search',
+                    srsearch: search,
+                    format: 'json',
+                    origin: '*'
+                };
+                jQuery.ajax(
+                    {
+                        url: 'https://en.wikipedia.org/w/api.php',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        type: "GET",
+                        dataType: "json",
+                        data: data,
+                        success: function (result) {
+
+                            for (const article of result.query.search) {
+                                addNewArticle(article.pageid, article.title, article.snippet);
+                            }
+
+                            console.log(result);
+                        },
+                        error: function () {
+                            console.log("error");
+                        }
+                    }
+                );
+            }
+            $(document).ready(
+                createSearchForm
+            );
+            
+        </script>
+    </head>
+    <body></body>
+</html>

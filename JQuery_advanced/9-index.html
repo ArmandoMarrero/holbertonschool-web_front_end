@@ -1,0 +1,129 @@
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Task 9</title>
+
+        <style>
+            .loading {
+                opacity: 0.2;
+            }
+        </style>
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script type="application/javascript">
+
+            function createSearchForm() {
+                const textQueryElement = $('<input type="text">');
+                const submitButton = $('<input type="submit">');
+
+                submitButton.click(
+                    function () {
+                        queryWikipedia(textQueryElement.val());
+                    }
+                );
+
+                $('body').append(
+                    textQueryElement,
+                    submitButton,
+                    $('<ul id="results"></ul>'),
+                    $('<ul id="pagination"></ul>')
+                        .css('list-style', 'none')
+                );
+            }
+
+            function addNewArticle(id, title, snippet) {
+                $('#results').append(
+                    $('<li></li>').append(
+                        $('<p></p>').append(
+                            $('<span>' + id + ' - </span>').append(
+                                '<b>' + title + '</b>'
+                            )
+                        ),
+                        $('<p></p>').text(snippet)
+                    )
+                );
+            }
+
+            function queryWikipedia (search, offset = 0) {
+
+                displayLoading(true);
+
+                const data = {
+                    action: 'query',
+                    list: 'search',
+                    srsearch: search,
+                    sroffset: offset,
+                    format: 'json',
+                    origin: '*'
+                };
+
+                jQuery.ajax(
+                    {
+                        url: 'https://en.wikipedia.org/w/api.php',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        type: "GET",
+                        dataType: "json",
+                        data: data,
+                        success: function (result) {
+
+                            const articlesPerPage = 10;
+                            buildPagination(result.query.searchinfo.totalhits, articlesPerPage, offset);
+
+                            $('#results').empty();
+                            for (const article of result.query.search) {
+                                addNewArticle(article.pageid, article.title, article.snippet);
+                            }
+                            // console.log(result);
+
+                            displayLoading(false);
+                        },
+                        error: function () {
+                            console.log("error");
+                        }
+                    }
+                );
+            }
+
+            function displayLoading(loading) {
+                if (loading) {
+                    $('#results').wrap(
+                        $('<div class="loading"></div>')
+                    );
+                } else {
+                    $('#results').unwrap();
+                }
+            }
+
+            function buildPagination(numberOfItems, itemsPerPage, currentOffset) {
+                $('#pagination').empty();
+
+                for (let pageNum = 0; pageNum < numberOfItems / itemsPerPage; pageNum++) {
+                    $('#pagination').append(
+                        $('<li></li>')
+                            .text(pageNum + 1)
+                            .css('cursor', 'pointer')
+                            .css('margin-left', '10px')
+                            .css('display', 'inline')
+                            .css(
+                                'font-weight',
+                                pageNum == currentOffset ? 'bold' : 'normal'
+                            )
+                            .click(
+                                function () {
+                                    queryWikipedia($('input[type=text]').val(), pageNum);
+                                }
+                            )
+                    );
+                }
+            }
+
+            $(document).ready(
+                createSearchForm
+            );
+
+        </script>
+    </head>
+    <body></body>
+</html>

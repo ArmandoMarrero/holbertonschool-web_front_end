@@ -1,0 +1,65 @@
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Task 6</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script type="application/javascript">
+
+            function createFamilyTree() {
+                $('body').append('<table><thead><th>Firstname</th><th>Lastname</th></thead></table>');
+                $('table').append('<tbody></tbody>');
+            }
+            function addNewMember(firstName, lastName, position) {
+                const newMember = $('<tr></tr>');
+                newMember.append('<td>' + firstName + '</td>');
+                newMember.append('<td>' + lastName + '</td>');
+                const newMemberXButton = $('<td>(x)</td>');
+                newMemberXButton.css('background-color', 'orange');
+                newMemberXButton.on(
+                    'click',
+                    function () {
+                        $(this).parent().remove();
+                    }
+                );
+                newMember.append(newMemberXButton);
+                if (position === 'before') {
+                    $('tbody').prepend(newMember);
+                } else {
+                    $('tbody').append(newMember);
+                }
+            }
+            function createForm() {
+                const table = $('table');
+                table.before(
+                    '<input name="first name" type="text" aria-required="true">'
+                );
+                table.before(
+                    '<input name="last name" type="text" aria-required="true">'
+                );
+                const formSelect = $('<select name="position"></select>');
+                formSelect.append('<option value="before">Before</option>');
+                formSelect.append('<option value="after">After</option>');
+                table.before(formSelect);
+                const submitButton = $('<input type="submit">');
+                submitButton.click(
+                    function () {
+                        const firstName = $('input:first-of-type').val();
+                        const lastName = $('input:nth-of-type(2)').val();
+                        const position = $('select').val();
+                        const formResults = $('form').serializeArray();
+                        addNewMember(firstName, lastName, position);
+                    }
+                );
+                table.before(submitButton);
+            }
+            $(document).ready(
+                function () {
+                    createFamilyTree();
+                    createForm();
+                }
+            );
+            
+        </script>
+    </head>
+    <body></body>
+</html>

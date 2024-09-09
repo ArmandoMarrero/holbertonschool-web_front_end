@@ -1,0 +1,120 @@
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Task 12</title>
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script type="application/javascript">
+
+            function addPostRow (data) {
+                // form is added at the start of the body in function 'buildForm', 2 functions down
+                $('form').after(
+                    $('<p id="row-' + data.id + '">').append(
+                        $('<span>(delete)</span>').click(
+                            function () {
+                                deletePost(data.id);
+                            }
+                        )
+                    ).append(
+                        '<span>Post created with id ' + data.id
+                            + ', title: '
+                            + data.title + ', author: '
+                            + data.author + '</span>'
+                    )
+                );
+            }
+
+            function listPosts () {
+                $.ajax(
+                    'http://localhost:3000/posts',
+                    {
+                        type: "GET",
+                        statusCode: {
+                            200: function (response) {
+                                for (const post of response) {
+                                    addPostRow(post);
+                                }
+                            }
+                        },
+                        error: function (xhr, statusText, error) {
+                            alert('Server Error');
+                        }
+                    }
+                );
+            }
+
+            function deletePost(id) {
+                $.ajax(
+                    'http://localhost:3000/posts/' + id,
+                    {
+                        type: "DELETE",
+                        success: function (data, textStatus, jqXHR) {
+                            $('#row-' + id).remove();
+                        },
+                        error: function (xhr, statusText, error) {
+                            alert('Post was not deleted');
+                        }
+                    }
+                )
+            }
+
+            function buildForm () {
+                $('body').append(
+                    $('<form>').append(
+                        $('<div>').append(
+                            '<label for="author">Author</label>',
+                            '<input id="author" type="text">'
+                        ),
+                        $('<div>').append(
+                            $('<label for="title">Title</label>'),
+                            $('<textarea id="title">')
+                        ),
+                        $('<input type="submit">')
+                    ).submit(
+                        function (event) {
+                            // Prevent form from refreshing the page,
+                            // since the new post that's just been submitted
+                            // Will be prepended to the posts in sendForm.
+                            event.preventDefault();
+
+                            sendForm();
+                        }
+                    )
+                );
+            }
+
+            function sendForm() {
+                $('form').after('<p>About to send the query to the API</p>');
+
+                const data = {
+                    title: $('#title').val(),
+                    author: $('#author').val()
+                };
+
+                $.ajax(
+                    'http://localhost:3000/posts',
+                    {
+                        type: "POST",
+                        dataType: 'json',
+                        data: data,
+                        success: function (data, textStatus, jqXHR) {
+                            addPostRow(data);
+                        },
+                        error: function (xhr, statusText, error) {
+                            alert('Error sending the POST query');
+                        }
+                    }
+                );
+            }
+
+            $(document).ready(
+                function () {
+                    buildForm();
+                    listPosts();
+                }
+            );
+
+        </script>
+    </head>
+    <body></body>
+</html>
