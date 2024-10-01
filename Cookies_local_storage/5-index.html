@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Exercise 5</title>
+        <script>
+
+            const availableItems = ["Shampoo", "Soap", "Sponge", "Water"];
+
+             function addItemToCart (item) {
+                localStorage.setItem(item, true);
+            }
+
+            function createStore () {
+                const avaliableItemsUl = document.createElement('ul');
+
+                for (const availableItem of availableItems) {
+                    const availableItemLi = document.createElement('li');
+                    availableItemLi.textContent = availableItem;
+
+                    availableItemLi.onclick = function () {
+                        addItemToCart(availableItem);
+                    }
+
+                    avaliableItemsUl.appendChild(availableItemLi);
+                }
+                document.body.appendChild(avaliableItemsUl);
+            }
+
+            function displayCart () {
+                if (localStorage.length) {
+
+                    let cartItemCount = 0;
+
+                    for (const item of Object.keys(localStorage)) {
+                        cartItemCount++;
+                    }
+
+                    const itemsInCartP = document.createElement('p');
+                    itemsInCartP.textContent = `You previously had ${cartItemCount} item${cartItemCount > 1 ? 's' : ''} in your cart`;
+                    document.body.appendChild(itemsInCartP);
+                }
+            }
+
+            window.onload = function () {
+                if (typeof(Storage) !== "undefined") {
+                    displayCart();
+                    createStore();
+                } else {
+                    alert("Sorry, your browser does not support Web storage. Try again with a better one");
+                }
+            };
+        </script>
+    </head>
+    <body></body>
+</html>
